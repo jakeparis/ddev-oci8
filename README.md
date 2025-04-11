@@ -1,5 +1,5 @@
-## OCi8 for ddev
+## OCi8 // ARM64 for ddev
 
 ```ssh
-ddev add-on get takielias/ddev-oci8
+ddev add-on get jakeparis/ddev-oci8-arm64-forked
 ```

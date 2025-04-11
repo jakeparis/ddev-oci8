@@ -12,13 +12,13 @@ mkdir -p $ORACLE_DIR
 
 # Unzip the existing files
 echo "Unzipping Oracle Instant Client files..."
-unzip -o /var/www/html/.ddev/web-build/oracle/instantclient-basic-linux.x64-12.1.0.2.0.zip -d $ORACLE_DIR
-unzip -o /var/www/html/.ddev/web-build/oracle/instantclient-sdk-linux.x64-12.1.0.2.0.zip -d $ORACLE_DIR
+unzip -o /var/www/html/.ddev/web-build/oracle/instantclient-basiclite-linux.arm64-23.7.0.25.01.zip -d $ORACLE_DIR
+unzip -o /var/www/html/.ddev/web-build/oracle/instantclient-sdk-linux.arm64-23.7.0.25.01.zip -d $ORACLE_DIR
 
 # Create symbolic links
 echo "Creating symbolic links..."
-ln -sf $ORACLE_DIR/libclntsh.so.12.1 $ORACLE_DIR/libclntsh.so
-ln -sf $ORACLE_DIR/libocci.so.12.1 $ORACLE_DIR/libocci.so
+ln -sf $ORACLE_DIR/libclntsh.so.23.7 $ORACLE_DIR/libclntsh.so
+ln -sf $ORACLE_DIR/libocci.so.23.7 $ORACLE_DIR/libocci.so
 
 # Configure dynamic linker run-time bindings
 echo "Configuring dynamic linker run-time bindings..."

@@ -1,18 +1,25 @@
+#ddev-generated
 ARG BASE_IMAGE
 FROM $BASE_IMAGE
 
 # Oracle instantclient
-RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y -o Dpkg::Options::="--force-confnew" --no-install-recommends --no-install-suggests gcc make autoconf libc-dev pkg-config php-pear php8.2-dev libmcrypt-dev build-essential libaio1 unzip wget
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y -o Dpkg::Options::="--force-confnew" --no-install-recommends --no-install-suggests gcc make autoconf libc-dev pkg-config php-pear php${DDEV_PHP_VERSION}-dev libmcrypt-dev build-essential libaio1 unzip wget
 
 # Download Oracle Instant Client packages
-RUN wget https://download.oracle.com/otn_software/linux/instantclient/2370000/instantclient-basiclite-linux.arm64-23.7.0.25.01.zip -O /tmp/instantclient-basiclite-linux.arm64-23.7.0.25.01.zip && \
-    wget https://download.oracle.com/otn_software/linux/instantclient/2370000/instantclient-sdk-linux.arm64-23.7.0.25.01.zip -O /tmp/instantclient-sdk-linux.arm64-23.7.0.25.01.zip
+RUN wget https://download.oracle.com/otn_software/linux/instantclient/2370000/instantclient-basiclite-linux.arm64-23.7.0.25.01.zip -O /tmp/instantclient-basiclite-linux.arm64-23.7.0.25.01.zip
+RUN wget https://download.oracle.com/otn_software/linux/instantclient/2370000/instantclient-sdk-linux.arm64-23.7.0.25.01.zip -O /tmp/instantclient-sdk-linux.arm64-23.7.0.25.01.zip
 
-RUN unzip /tmp/instantclient-basiclite-linux.arm64-23.7.0.25.01.zip -d /usr/local/ && \
-    unzip /tmp/instantclient-sdk-linux.arm64-23.7.0.25.01.zip -d /usr/local/
+# either need the -o flag or to remove the META-INF directory afterwards, as both of these zips have that
+# same dir and cause a fail on the second command because it already exists 
+RUN unzip /tmp/instantclient-basiclite-linux.arm64-23.7.0.25.01.zip -d /usr/local/
+RUN rm -rf /usr/local/META-INF
+RUN unzip /tmp/instantclient-sdk-linux.arm64-23.7.0.25.01.zip -d /usr/local/
 
 RUN ln -s /usr/local/instantclient_23_7 /usr/local/instantclient
-RUN ln -s /usr/local/instantclient/libclntsh.so.23.7 /usr/local/instantclient/libclntsh.so
+
+# these softlinks already exist in the delivered files
+#RUN ln -s /usr/local/instantclient/libclntsh.so.23.1 /usr/local/instantclient/libclntsh.so
+#RUN ln -s /usr/local/instantclient/libclntsh.so.23.1 /usr/local/instantclient/libclntsh.so
 
 RUN echo '/usr/local/instantclient'  > /etc/ld.so.conf.d/oracle-instantclient
 RUN echo '/usr/local/instantclient' >> /etc/ld.so.conf.d/aarch64-linux-gnu.conf
@@ -26,4 +33,5 @@ RUN echo 'instantclient,/usr/local/instantclient' | pecl install oci8
 RUN apt-get clean -y
 
 # Clean up downloaded files
-RUN rm /tmp/instantclient-basiclite-linux.arm64-23.7.0.25.01.zip /tmp/instantclient-sdk-linux.arm64-23.7.0.25.01.zip
+RUN rm /tmp/instantclient-basiclite-linux.arm64-23.7.0.25.01.zip
+RUN rm /tmp/instantclient-sdk-linux.arm64-23.7.0.25.01.zip
